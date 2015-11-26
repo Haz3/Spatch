@@ -3,7 +3,6 @@
 import json
 import socket
 import sys
-import dpkt
 import argparse
 from struct import *
 
@@ -66,7 +65,27 @@ def getPacket(s):
                   s_addr = socket.inet_ntoa(iph[8]);
                   d_addr = socket.inet_ntoa(iph[9]);
 
-                  #print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
+                  if results.filter == "src":
+                        src_ip_addr_str = s_addr
+                        if results.ip_addr == src_ip_addr_str:
+                            print 'Source Adress ' + str(s_addr)
+                            print 'Destination Adress' + str(d_addr)
+                            print 'Version ' + str(version)
+                            print 'IP Header Length ' + str(ihl)
+                            print 'TTL ' + str(ttl)
+                            print 'Protocol ' + str(protocol)
+                  elif results.filter == "dst":
+                        dst_ip_addr_str = d_addr
+                        if results.ip_addr == dst_ip_addr_str:
+                            print 'Destination Adress' + str(d_addr)
+                            print 'Source Adress ' + str(s_addr)
+                            print 'Version ' + str(version)
+                            print 'IP Header Length ' + str(ihl)
+                            print 'TTL ' + str(ttl)
+                            print 'Protocol ' + str(protocol)
+                  else:
+                      print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(s_addr) + 'Destination Address : ' + str(d_addr)
+
 
                   currentPacket['VERSION'] = str(version)
                   currentPacket['IHL'] = str(ihl)
@@ -74,8 +93,6 @@ def getPacket(s):
                   currentPacket['PROTOCOL'] = str(protocol)
                   currentPacket['ADDRESS_SOURCE'] = str(s_addr)
                   currentPacket['DESTINATION_SOURCE'] = str(d_addr)
-
-                  filter(currentPacket)
 
                   #TCP protocol
                   if protocol == 6 :
@@ -178,16 +195,6 @@ def getPacket(s):
                         print 'Protocol other than TCP/UDP/ICMP'
 
                   listPackets.append(currentPacket)
-                  if results.filter == "src":
-                        src_ip_addr_str = raw_socket['ADDRESS_SOURCE']
-                        print src_ip_addr_str
-                        if results.ip_addr == src_ip_addr_str:
-                              pass
-                  elif results.filter == "dst":
-                        dst_ip_addr_str = raw_socket['DESTINATION_SOURCE']
-                        print dst_ip_addr
-                        if results.ip_addr == dst_ip_addr_str:
-                              pass
 
 def open_pcap(filename):
 
