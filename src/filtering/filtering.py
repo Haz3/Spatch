@@ -39,7 +39,6 @@ def open_pcap(filename):
     print "Total number of packets in the pcap file: ", counter
     print "Total number of tcp packets: ", tcp_counter
 
-
 if __name__ == '__main__':
 
     if len(sys.argv) > 1:

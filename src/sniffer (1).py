@@ -66,14 +66,16 @@ def getPacket(s):
                   s_addr = socket.inet_ntoa(iph[8]);
                   d_addr = socket.inet_ntoa(iph[9]);
 
-                  print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
+                  #print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(s_addr) + ' Destination Address : ' + str(d_addr)
 
                   currentPacket['VERSION'] = str(version)
                   currentPacket['IHL'] = str(ihl)
                   currentPacket['TTL'] = str(ttl)
                   currentPacket['PROTOCOL'] = str(protocol)
                   currentPacket['ADDRESS_SOURCE'] = str(s_addr)
-                  currentPacket['ADDRESS_SOURCE'] = str(d_addr)
+                  currentPacket['DESTINATION_SOURCE'] = str(d_addr)
+
+                  filter(currentPacket)
 
                   #TCP protocol
                   if protocol == 6 :
@@ -110,6 +112,7 @@ def getPacket(s):
 
                         #ICMP Packets
                   elif protocol == 1 :
+
                         u = iph_length + eth_length
                         icmph_length = 4
                         icmp_header = packet[u:u+4]
@@ -140,6 +143,7 @@ def getPacket(s):
 
                         #UDP packets
                   elif protocol == 17 :
+                        print "UDP\n"
                         u = iph_length + eth_length
                         udph_length = 8
                         udp_header = packet[u:u+8]
@@ -174,6 +178,16 @@ def getPacket(s):
                         print 'Protocol other than TCP/UDP/ICMP'
 
                   listPackets.append(currentPacket)
+                  if results.filter == "src":
+                        src_ip_addr_str = raw_socket['ADDRESS_SOURCE']
+                        print src_ip_addr_str
+                        if results.ip_addr == src_ip_addr_str:
+                              pass
+                  elif results.filter == "dst":
+                        dst_ip_addr_str = raw_socket['DESTINATION_SOURCE']
+                        print dst_ip_addr
+                        if results.ip_addr == dst_ip_addr_str:
+                              pass
 
 def open_pcap(filename):
 
@@ -213,16 +227,15 @@ def open_pcap(filename):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1:
-        parser = argparse.ArgumentParser()
-        parser.add_argument('-filename', action='store', dest='filename',
+      if len(sys.argv) > 1:
+            parser = argparse.ArgumentParser()
+            parser.add_argument('-filename', action='store', dest='filename',
                 help='pcap file')
-        parser.add_argument('-filter', action='store', dest='filter',
+            parser.add_argument('-filter', action='store', dest='filter',
                 default=10, help='filter [src] or [dst]')
-        parser.add_argument('-addr', action='store', dest='ip_addr',
+            parser.add_argument('-addr', action='store', dest='ip_addr',
                 default=10, help='ip adress')
-        parser.add_argument('--version', action='version',
+            parser.add_argument('--version', action='version',
                 version="%(prog)s 0.1")
-        results = parser.parse_args()
-        open_pcap(results.filename)
-getPacket(openSocket())
+            results = parser.parse_args()
+            getPacket(openSocket())
