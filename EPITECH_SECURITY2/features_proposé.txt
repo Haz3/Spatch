@@ -1,0 +1,5 @@
+Log des historiques (de connections / cmd ?) aux servers demandés
+Fast connection (reconnection automatique)
+Binding
+Nombre d'utilisateur connectés à Spatch
+Liste des serveurs auxquel l'utilisateur à accés
