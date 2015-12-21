@@ -1,0 +1,94 @@
+Last update: 11 dec. 2015
+
+ CEI - NETSEC #2
+-----------------
+
+- Project info -
+Name:             Spatch!
+Reading material: 
+  RFC 4251, RFC 4252, RFC 4253, RFC 4254, RFC 4255
+
+---
+- Validation criteria -
+10 days (cf bottom of this document) after the begining of the course, 
+a text or PDF document describing the list of features must be sent to 
+the professor for validation. (Request For Approval)
+
+Mail: <louyot_c@epitech.eu>
+Subject: [NS2][RFA] Feature list
+
+NOTE: The subject *MUST* be exactly as explained in this document as it will be
+automatically sorted.
+
+The final project must be :
+    completed,
+    stable,
+    usable,
+    packaged.
+
+A technical and user documentation must be provided as PDF during the 
+final defense.
+The packaging must be at least for Debian 7 64bits.
+During the final defense, the package will be installed through dpkg and 
+tested as is.
+
+You must provide a complete testing environment for your features.
+
+---
+- Project - 
+Spatch! is a ssh proxy with ACL.
+
+No language limitation.
+No library limitation **except** for the network part.
+If it is doing the job for you (network-side), you're doing it wrong.
+In case of doubt, consider it forbidden.
+As networking libraries, you are only allowed to use libssh and its bindings.
+
+Consider the following network architecture:
+ --------                               ---------
+| User#1 |------- standard sshv2 ----> | Spatch! |
+ --------                               ---------
+                                            |
+                                            |
+       ---------- standard sshv2 -----------|
+      | if User#1 is allowed to Server#55   |
+ -----------                                |
+| Server#55 |                               |
+ -----------                                |
+                                            |
+       ---------- standard sshv2 -----------|
+      | if User#1 is allowed to Server#23   |
+ -----------                                |
+| Server#23 |                               |
+ -----------                                |
+                                            |
+       ---------- standard sshv2 -----------
+      | User#1 is never allowed to Server#56
+ -----------
+| Server#56 |
+ -----------
+
+Spatch! has access to every server on this network.
+In this example, User#1 is allowed by Spatch! to access to Server#55 and 
+Server#23.
+The Server#56 is forbidden to User#1.
+
+User#1 uses a standard sshv2 client such as Putty or ssh to connect to Spatch!.
+Spatch asks the user which server it wants to connect to (according to his 
+access).
+User#1 selects a server and then Spatch! establishes the connection to the 
+remote server and tunnels the ssh conection to User#1.
+
+For instance, it allows an admin team to give a new sysadmin access to a remote 
+server without exposing the real credentials.
+
+Have fun.
+---
+- Deadlines for 2015-2016 -
+Project start:  12/10/2015
+Feature RFA:    12/20/2015 MAXIMUM
+Final RFA:      01/03/2016 MAXIMUM
+Final defense:  02/05/2016
+
+Please note the dates format are MM/DD/YYYY!
+
