@@ -8,6 +8,7 @@ import traceback
 
 import paramiko
 from get_allowed_users import open_config_file, createSSHClient
+from connect_ssh import connect
 
 auth_username = ""
 
@@ -115,7 +116,7 @@ if __name__ == '__main__':
         ip_server = open_config_file(server_name)
         try:
             print "createSSHClient"
-            createSSHClient(ip_server, 22, 'user1', 'password')
+            connect('user1', 'password', ip_server)
         except:
             print "Fail"
         chan.close()
