@@ -7,18 +7,20 @@ import threading
 import traceback
 
 import paramiko
-from paramiko.py3compat import b, u, decodebytes
+from get_allowed_users import open_config_file, createSSHClient
+
+auth_username = ""
 
 # setup logging
 paramiko.util.log_to_file('demo_server.log')
 
 host_key = paramiko.RSAKey(filename='test_rsa.key')
-#host_key = paramiko.DSSKey(filename='test_dss.key')
 
 
 class Server (paramiko.ServerInterface):
     def __init__(self):
         self.event = threading.Event()
+        self.username = ""
 
     def check_channel_request(self, kind, chanid):
         if kind == 'session':
@@ -26,17 +28,25 @@ class Server (paramiko.ServerInterface):
         return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
     def check_auth_password(self, username, password):
-        if (username == 'user') and (password == 'password'):
+        if (username == 'user1') and (password == 'password'):
+            auth_username = 'user1'
             return paramiko.AUTH_SUCCESSFUL
-        return paramiko.AUTH_FAILED
-
+        elif (username == 'user2') and (password == 'password'):
+            auth_username = 'user2'
+            return paramiko.AUTH_SUCCESSFUL
+        elif (username == 'user3') and (password == 'password'):
+            auth_username = 'user3'
+            return paramiko.AUTH_SUCCESSFUL
+        else:
+            print "Unable recognize username : ", username
+            return paramiko.AUTH_FAILED
 
     def check_channel_shell_request(self, channel):
         self.event.set()
         return True
 
-    def check_channel_pty_request(self, channel, term, width, height, pixelwidth,
-                                  pixelheight, modes):
+    def check_channel_pty_request(self, channel, term, width, height,
+                                  pixelwidth, pixelheight, modes):
         return True
 
 
@@ -82,9 +92,9 @@ if __name__ == '__main__':
         # wait for auth
         try:
             chan = t.accept(20)
-            print "Accept"
+            print t.username
         except Exception as e:
-            print #!/usr/bin/env python
+            print  # !/usr/bin/env python
 
         if chan is None:
             print('*** No channel.')
@@ -100,8 +110,14 @@ if __name__ == '__main__':
         chan.send('Select your server: ')
 
         f = chan.makefile('rU')
-        server_name = f.readline()
-        chan.send('\r\nI don\'t like this, ' + server_name + '.\r\n')
+        server_name = f.readline().strip('\r\n')
+        chan.send('\r\nConnecting to ' + server_name + '\r\n')
+        ip_server = open_config_file(server_name)
+        try:
+            print "createSSHClient"
+            createSSHClient(ip_server, 22, 'user1', 'password')
+        except:
+            print "Fail"
         chan.close()
 
     except Exception as e:
