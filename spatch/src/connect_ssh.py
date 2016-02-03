@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import base64
 import getpass
 import os
@@ -7,6 +9,8 @@ import traceback
 
 import paramiko
 
+from interactive import posix_shell
+
 # setup logging
 paramiko.util.log_to_file('demo_simple.log')
 # Paramiko client configuration
@@ -15,7 +19,6 @@ port = 22
 
 def connect(username, password, hostname):
     """username, password.base64(), hostname."""
-    username = ''
     # get username
     if username == '':
         default_username = getpass.getuser()
@@ -33,7 +36,7 @@ def connect(username, password, hostname):
         chan = client.invoke_shell()
         print(repr(client.get_transport()))
         print('*** Here we go!\n')
-        interactive.interactive_shell(chan)
+        posix_shell(chan)
         chan.close()
         client.close()
 

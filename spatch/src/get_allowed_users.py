@@ -42,12 +42,17 @@ def OpenFileaddToPermission(serverPermission):
 
 
 def createSSHClient(server, port, user, password):
-    print "contacting %s: %d" % (server, int(port))
+
     try:
+        print "contacting %s: %d" % (server, int(port))
         client = paramiko.SSHClient()
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(server, port, user, password)
+        try:
+            print "connect"
+            client.connect(server, port, user, password)
+        except Exception as e:
+            print str(e)
         return client
     except Exception as e:
         print str(e)
